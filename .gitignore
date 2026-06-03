@@ -1,0 +1,84 @@
+# --- Java ---
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+*.hprof
+
+# --- Build outputs ---
+target/
+build/
+out/
+bin/
+dist/
+
+# --- Maven ---
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# --- Gradle ---
+.gradle/
+**/build/
+!src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# --- IDE: IntelliJ IDEA ---
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# --- IDE: Eclipse ---
+.classpath
+.project
+.settings/
+
+# --- IDE: VS Code / Cursor ---
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- Logs & temp ---
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.swp
+*~
+
+# --- Secrets & local config ---
+.env
+.env.*
+!.env.example
+*.pem
+credentials.json
+secrets/
+
+# --- Test / coverage ---
+coverage/
+.jacoco/
+
+# --- Archives ---
+*.zip
+*.tar.gz
