@@ -1,3 +1,4 @@
+﻿// Persists Persistable entities to a text file under data/.
 package service;
 
 import model.Equipment;
