@@ -1,3 +1,4 @@
+﻿// Search service supports player, team, hero, and match history queries.
 package service;
 
 import model.Equipment;
