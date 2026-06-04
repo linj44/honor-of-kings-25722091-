@@ -1,0 +1,41 @@
+@startuml
+abstract class Person {
+  - id: String
+  - name: String
+  - password: String
+  - role: Role
+}
+
+class Player {
+  - teamId: String
+  - level: int
+  - wins: int
+  - matches: int
+}
+
+class Admin
+class Hero
+class Equipment
+class Team
+class MatchRecord
+
+Person <|-- Player
+Person <|-- Admin
+Team o-- Player
+Player o-- Hero
+Hero o-- Equipment
+MatchRecord --> Team
+
+class GameDataManager
+class AuthenticationService
+class SearchService
+class RankingService
+class FileStorageService
+class Main
+
+Main --> GameDataManager
+Main --> AuthenticationService
+Main --> SearchService
+Main --> RankingService
+Main --> FileStorageService
+@enduml
