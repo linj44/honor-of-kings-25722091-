@@ -1,4 +1,4 @@
-import model.Admin;
+﻿import model.Admin;
 import model.Equipment;
 import model.EquipmentType;
 import model.Hero;
@@ -92,6 +92,7 @@ public class Main {
         return true;
     }
 
+    // Fixed switch branch return syntax for exit options.
     private boolean adminMenu() {
         printAdminMenu();
         int choice = input.readInt("Choose an option: ", 0, 14);
