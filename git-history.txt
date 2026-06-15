@@ -1,0 +1,15 @@
+﻿* 82df231 (HEAD -> master) [AI-Implementation] implement file persistence
+* 138623b [AI-Implementation] implement search and ranking services
+* efa09fc [Human] add development log and git history export
+* 5e1fb17 [Docs] write plan design README and AI evidence
+* 9c26002 [Test] add manual test cases for core features
+* 538880f [Fix] fix switch return syntax in Main
+* 0d11bbe [AI-Review] review deletion consistency
+* 0b868a6 [AI-Implementation] implement console menus and admin CRUD
+* abb8d44 [AI-Implementation] implement core model classes and sample data
+* dded38e [AI-Architect] add interfaces enums and service package layout
+* 23bb83d [AI-Architect] draft OOP class structure for Person Hero Team
+* 0981432 [Human] create initial project structure and README
+* 8e6b347 [Human]Add .gitignore for Java builds, IDEs, and local secrets.
+* 1861c37 [Human] second commit: development log test
+* aaa4c05 [Human] initial commit: add project structure, source code and documentation

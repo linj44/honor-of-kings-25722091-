@@ -1,0 +1,141 @@
+@startuml HonorOfKingsIMS
+title Honor of Kings Information Management System - Class Diagram
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+top to bottom direction
+
+package model {
+  abstract class Person {
+    - id: String
+    - name: String
+    - password: String
+    - role: Role
+    + authenticate(password): boolean
+    + describeRole(): String
+  }
+
+  class Player {
+    - teamId: String
+    - level: int
+    - wins: int
+    - matches: int
+    - email: String
+    - ownedHeroIds: List
+    - heroEquipment: Map
+    + getWinRate(): double
+    + equipItem(heroId, equipmentId): void
+  }
+
+  class Admin
+
+  class Hero {
+    - id: String
+    - name: String
+    - type: HeroType
+    - attack: int
+    - defense: int
+    - hp: int
+  }
+
+  class Equipment {
+    - id: String
+    - name: String
+    - type: EquipmentType
+    - rating: double
+    - attackBonus: int
+    - defenseBonus: int
+    - hpBonus: int
+    - speedBonus: int
+  }
+
+  class Team {
+    - id: String
+    - name: String
+    - playerIds: List
+  }
+
+  class MatchRecord {
+    - id: String
+    - date: LocalDate
+    - teamId: String
+    - opponentTeamName: String
+    - result: MatchResult
+    - playerHeroPicks: Map
+  }
+
+  enum HeroType
+  enum EquipmentType
+  enum MatchResult
+  enum Role
+
+  interface Searchable
+  interface Reportable
+  interface Authenticatable
+
+  Person <|-- Player
+  Person <|-- Admin
+  Person ..|> Searchable
+  Person ..|> Authenticatable
+  Player ..|> Reportable
+  Hero ..|> Searchable
+  Hero ..|> Reportable
+  Equipment ..|> Searchable
+  Team ..|> Searchable
+  Team ..|> Reportable
+}
+
+package service {
+  class GameDataManager {
+    - users: Map
+    - players: Map
+    - heroes: Map
+    - equipment: Map
+    - teams: Map
+    - matches: List
+  }
+
+  class AuthenticationService
+  class SearchService
+  class RankingService
+  class FileStorageService
+}
+
+package util {
+  class DataInitializer
+  class AdminInitializer
+  class InputHelper
+}
+
+class Main
+
+Team "1" o-- "many" Player : members
+Player "1" o-- "many" Hero : owns
+Hero "1" o-- "many" Equipment : compatible
+MatchRecord --> Team : team
+MatchRecord --> Player : picks
+
+GameDataManager --> Person
+GameDataManager --> Player
+GameDataManager --> Hero
+GameDataManager --> Equipment
+GameDataManager --> Team
+GameDataManager --> MatchRecord
+
+AuthenticationService --> GameDataManager
+SearchService --> GameDataManager
+RankingService --> GameDataManager
+FileStorageService --> GameDataManager
+
+Main --> GameDataManager
+Main --> AuthenticationService
+Main --> SearchService
+Main --> RankingService
+Main --> FileStorageService
+Main --> DataInitializer
+Main --> AdminInitializer
+Main --> InputHelper
+
+DataInitializer ..> GameDataManager
+AdminInitializer ..> GameDataManager
+
+@enduml

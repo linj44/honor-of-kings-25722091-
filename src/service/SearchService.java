@@ -1,4 +1,3 @@
-﻿// Search service supports player, team, hero, and match history queries.
 package service;
 
 import model.Equipment;
@@ -23,35 +22,73 @@ public class SearchService {
     }
 
     public String buildPlayerLookupReport(String query) {
-        Optional<Player> playerOptional = manager.findPlayer(query);
-        if (playerOptional.isEmpty()) {
-            throw new IllegalArgumentException("Player not found: " + query);
-        }
-        Player player = playerOptional.get();
+        Player player = manager.findPlayer(query)
+                .orElseThrow(() -> new IllegalArgumentException("Player not found: " + query));
+        return buildPlayerProfileReport(player);
+    }
+
+    public String buildPlayerProfileReport(Player player) {
+        Team team = manager.findTeam(player.getTeamId()).orElse(null);
+        String teamLabel = team != null ? team.getId() + " (" + team.getName() + ")" : player.getTeamId();
+
         StringBuilder builder = new StringBuilder();
-        builder.append("=== Player Lookup ===\n");
+        builder.append("===== Player Profile =====\n");
         builder.append("ID: ").append(player.getId()).append('\n');
         builder.append("Name: ").append(player.getName()).append('\n');
-        Team team = manager.findTeam(player.getTeamId()).orElse(null);
-        builder.append("Team: ").append(team != null ? team.getName() : "Unknown").append('\n');
+        builder.append("Email: ").append(player.getEmail()).append('\n');
         builder.append("Level: ").append(player.getLevel()).append('\n');
-        builder.append(String.format("Win Rate: %.1f%% (%d wins / %d matches)%n",
-                player.getWinRate(), player.getWins(), player.getMatches()));
+        builder.append("Team: ").append(teamLabel).append('\n');
+        builder.append("Total Matches: ").append(player.getMatches()).append('\n');
+        builder.append("Wins: ").append(player.getWins()).append('\n');
+        builder.append(String.format("Win Rate: %.1f%%%n", player.getWinRate()));
+
         builder.append("Owned Heroes:\n");
+        appendOwnedHeroes(builder, player);
+
+        builder.append("\nHero Equipment Details:\n");
+        appendHeroEquipmentDetails(builder, player);
+        return builder.toString();
+    }
+
+    private void appendOwnedHeroes(StringBuilder builder, Player player) {
         for (String heroId : player.getOwnedHeroIds()) {
             Hero hero = manager.findHero(heroId).orElse(null);
             if (hero == null) {
                 continue;
             }
-            builder.append("  - ").append(hero.getName()).append(" (").append(hero.getType()).append(")\n");
-            builder.append("    Equipped: ");
-            List<String> equippedNames = new ArrayList<>();
-            for (String equipmentId : player.getEquipmentForHero(heroId)) {
-                manager.findEquipment(equipmentId).ifPresent(item -> equippedNames.add(item.getName()));
-            }
-            builder.append(equippedNames.isEmpty() ? "None" : String.join(", ", equippedNames)).append('\n');
+            builder.append(String.format("  - %s (%s)%n", hero.getName(), hero.getType()));
         }
-        return builder.toString();
+    }
+
+    private void appendHeroEquipmentDetails(StringBuilder builder, Player player) {
+        for (String heroId : player.getOwnedHeroIds()) {
+            Hero hero = manager.findHero(heroId).orElse(null);
+            if (hero == null) {
+                continue;
+            }
+            builder.append("  ").append(hero.getName()).append(":\n");
+
+            List<String> equippedIds = player.getEquipmentForHero(heroId);
+            if (!equippedIds.isEmpty()) {
+                builder.append("    Equipped Items:\n");
+                for (String equipmentId : equippedIds) {
+                    manager.findEquipment(equipmentId)
+                            .ifPresent(item -> builder.append(item.formatDetailLine()).append('\n'));
+                }
+            } else {
+                builder.append("    Equipped Items: None\n");
+            }
+
+            builder.append("    Compatible Equipment:\n");
+            if (hero.getCompatibleEquipmentIds().isEmpty()) {
+                builder.append("      (none)\n");
+            } else {
+                for (String equipmentId : hero.getCompatibleEquipmentIds()) {
+                    manager.findEquipment(equipmentId)
+                            .ifPresent(item -> builder.append(item.formatDetailLine()).append('\n'));
+                }
+            }
+        }
     }
 
     public String buildTeamOverviewReport(String query) {

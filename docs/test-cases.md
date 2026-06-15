@@ -2,14 +2,21 @@
 
 ## Test 01: Admin Login
 - Function tested: Authentication
-- Input: username `admin`, password `admin123`
+- Input: username `红糖guoy10`, password `123456`
+- Expected: Admin menu displayed, welcome message shows name `郭怡婷`
+- Actual: Admin menu displayed
+- Result: Pass
+
+## Test 01b: Admin Login (Second Account)
+- Function tested: Authentication
+- Input: username `饭团linj44`, password `070530`
 - Expected: Admin menu displayed
 - Actual: Admin menu displayed
 - Result: Pass
 
 ## Test 02: Invalid Login
 - Function tested: Authentication
-- Input: username `admin`, password `wrong`
+- Input: username `红糖guoy10`, password `wrong`
 - Expected: Login rejected
 - Actual: "Invalid username or password."
 - Result: Pass
@@ -23,9 +30,9 @@
 
 ## Test 04: Player Lookup by Name
 - Function tested: Player lookup
-- Input: search `Li Bai` owner player `P001` or search player `Chen Wei`
-- Expected: Player team, level, heroes, and equipment shown
-- Actual: Report displayed with Dragon Warriors, heroes, and equipped items
+- Input: search player `P001` or `Chen Wei`
+- Expected: Player profile shows owned heroes, equipped items with ATK/DEF/HP/SPD stats, proficiency, and compatible equipment list
+- Actual: Detailed hero and equipment report displayed
 - Result: Pass
 
 ## Test 05: Team Overview

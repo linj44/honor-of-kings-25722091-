@@ -1,68 +1,92 @@
-# Design Document — Honor of Kings IMS
+Design Document — Honor of Kings IMS
+Overall Structure
+I went with a simple layered design because it's easier to test and debug. Nothing too fancy:
 
-## Architecture
+Model layer: just the data classes (Hero, Player, Equipment, etc.) and enums
 
-The application uses a layered console architecture:
+Service layer: where the actual work happens — search, ranking, login, file saving
 
-- **Model layer:** domain entities and enums
-- **Service layer:** business logic, authentication, search, ranking, persistence
-- **Util layer:** sample data and input helpers
-- **Presentation layer:** `Main` menu system
+Util layer: helper stuff like loading sample data and getting user input
 
-## Ranking Formulas
+Presentation layer: basically just Main.java with all the menus
 
-### Equipment score
+How Ranking Works
+Equipment Score Formula
+Here's what I came up with for ranking equipment:
 
-```
+text
 score = usageCount * 1.5 + averageRating * 2 + heroesUsing + winContribution
-```
+Breaking it down:
 
-Where:
+usageCount → how many times this item is equipped across all players
 
-- `usageCount` = number of equipped instances across all players
-- `averageRating` = equipment rating field (0-5 scale)
-- `heroesUsing` = number of equipped usages counted per item
-- `winContribution` = number of wins in matches where the item was equipped through a picked hero
+averageRating → the item's rating (0–5 marks)
 
-### Player custom score
+heroesUsing → how many heroes have this item equipped (counts each hero separately)
 
-```
+winContribution → number of match wins where this item was used on a picked hero
+
+I tweaked the weights a bit so rating matters more (multiplied by 2), since I think item quality should be more important than just how many people use it.
+
+Player Custom Score
+For the leaderboard custom metric:
+
+text
 customScore = level * 1.2 + winRate * 0.5 + matches * 0.3
-```
+Level is weighted highest because I feel like experienced players should rank higher, but win rate and match count still contribute.
 
-### Leaderboard tie handling
+Tie-Breaking Rules
+When two players have the same score, I sort by:
 
-Primary metric descending, then secondary keys:
+Win rate leaderboard: win rate → matches played → name alphabetically
 
-- win rate: win rate → matches → name
-- level: level → name
-- matches: matches → name
-- score: custom score → name
+Level leaderboard: level → name
 
-## Authentication Rules
+Matches leaderboard: matches → name
 
-- Admin account: `admin / admin123`
-- Player accounts: player ID / `player123`
-- Admin can manage all records
-- Player can view own profile, edit email/password, and access public reports
+Custom score leaderboard: custom score → name
 
-## Persistence
+Nothing crazy, just makes sure there's always a clear order.
 
-File: `data/game_data.txt`
+Login & Permissions
+I have two hardcoded admin accounts (from the sample data):
 
-Load order:
+Name	      	Username	       Password
+饭团linj44	饭团linj44		lsfllrljl070530
+郭怡婷	      	红糖guoy10	       123456
+Regular players log in with their player ID (like P001) and the default password player123. Admins can do everything (add, edit, delete). Players can only view public info and edit their own email/password.
 
-1. teams
-2. equipment
-3. heroes
-4. players
-5. matches
+File Saving (Persistence)
+I save everything to data/game_data.txt. The format is pipe-delimited (|), which is simple and worked fine for this project.
 
-After loading from file, the default admin account is re-registered.
+Load order matters because of dependencies:
 
-## Deletion Consistency
+Teams (players need team IDs later)
 
-- Deleting a hero removes it from player ownership, equipment mappings, and match picks
-- Deleting a player removes user registration and team membership
-- Deleting equipment removes compatibility links and equipped references
-- Deleting a team clears player team references indirectly through team removal logic
+Equipment (heroes need equipment compatibility)
+
+Heroes (players need hero IDs)
+
+Players (matches need player IDs)
+
+Matches (depends on everything else)
+
+After loading from file, I re-register the default admin accounts just in case the file doesn't have them.
+
+Delete Consistency
+This was a pain point. I made sure deleting something cleans up everywhere:
+
+Delete a hero → remove it from players' owned lists, remove equipment mappings, and take it out of match picks
+
+Delete a player → remove from user registration and kick them out of their team
+
+Delete equipment → remove from hero compatibility lists and unequip from all players
+
+Delete a team → clear team reference from players on that team
+
+I caught some of these issues during testing (Test 14 in test-cases.md). The AI gave me a basic delete method but didn't handle all the references, so I had to add the cleanup logic myself.
+
+Final Notes
+Nothing too complicated design-wise. I tried to keep it organized so I could find things easily. If I had more time, I'd probably refactor the menu code in Main.java — it's getting a bit long.
+
+

@@ -104,14 +104,7 @@ public class Player extends Person implements Reportable {
 
     @Override
     public String generateReport() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Player ID: ").append(getId()).append('\n');
-        builder.append("Name: ").append(getName()).append('\n');
-        builder.append("Team ID: ").append(teamId).append('\n');
-        builder.append("Level: ").append(level).append('\n');
-        builder.append(String.format("Win Rate: %.1f%% (%d/%d)%n", getWinRate(), wins, matches));
-        builder.append("Email: ").append(email).append('\n');
-        builder.append("Owned Heroes: ").append(ownedHeroIds).append('\n');
-        return builder.toString();
+        return String.format("Player %s (%s) | Level %d | Win Rate %.1f%% | Email: %s",
+                getName(), getId(), level, getWinRate(), email);
     }
 }

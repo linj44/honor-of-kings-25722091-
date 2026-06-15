@@ -1,4 +1,3 @@
-﻿// Persists Persistable entities to a text file under data/.
 package service;
 
 import model.Equipment;
@@ -36,7 +35,8 @@ public class FileStorageService {
             for (Equipment equipment : manager.getEquipmentItems()) {
                 writer.write("EQUIP|" + equipment.getId() + "|" + equipment.getName() + "|" + equipment.getType()
                         + "|" + equipment.getRating() + "|" + equipment.getAttackBonus() + "|"
-                        + equipment.getDefenseBonus());
+                        + equipment.getDefenseBonus() + "|" + equipment.getHpBonus() + "|"
+                        + equipment.getSpeedBonus());
                 writer.newLine();
             }
             for (Hero hero : manager.getHeroes()) {
@@ -142,8 +142,11 @@ public class FileStorageService {
     }
 
     private void loadEquipment(GameDataManager manager, String[] parts) {
+        int hpBonus = parts.length > 7 ? Integer.parseInt(parts[7]) : 0;
+        int speedBonus = parts.length > 8 ? Integer.parseInt(parts[8]) : 0;
         manager.addEquipment(new Equipment(parts[1], parts[2], EquipmentType.valueOf(parts[3]),
-                Double.parseDouble(parts[4]), Integer.parseInt(parts[5]), Integer.parseInt(parts[6])));
+                Double.parseDouble(parts[4]), Integer.parseInt(parts[5]), Integer.parseInt(parts[6]),
+                hpBonus, speedBonus));
     }
 
     private void loadTeam(GameDataManager manager, String[] parts) {

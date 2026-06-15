@@ -29,7 +29,29 @@ public class GameDataManager {
     }
 
     public Optional<Person> findUser(String id) {
-        return Optional.ofNullable(users.get(id));
+        return findUserForLogin(id);
+    }
+
+    public Optional<Person> findUserForLogin(String login) {
+        if (login == null || login.isBlank()) {
+            return Optional.empty();
+        }
+        String normalized = login.trim();
+        Person direct = users.get(normalized);
+        if (direct != null) {
+            return Optional.of(direct);
+        }
+        for (Person user : users.values()) {
+            if (user.getId().equals(normalized) || user.getName().equals(normalized)) {
+                return Optional.of(user);
+            }
+        }
+        for (Person user : users.values()) {
+            if (user.matchesQuery(normalized)) {
+                return Optional.of(user);
+            }
+        }
+        return Optional.empty();
     }
 
     public Collection<Person> getUsers() {

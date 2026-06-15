@@ -1,4 +1,6 @@
 @startuml
+' Honor of Kings IMS - UML Class Diagram (source for uml.png)
+
 abstract class Person {
   - id: String
   - name: String
@@ -38,4 +40,5 @@ Main --> AuthenticationService
 Main --> SearchService
 Main --> RankingService
 Main --> FileStorageService
+
 @enduml

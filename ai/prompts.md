@@ -7,7 +7,7 @@ Agent Role: Architect Agent
 Related Commit: pending `[AI-Architect] draft OOP class structure`
 
 ### My Prompt
-I am building a Java Honor of Kings information management system coursework. Suggest a class structure using inheritance, interfaces, collections, and service classes. Do not write full code yet.
+I am building a Java Honor of Kings information management system coursework. Suggest a class structure using inheritance, interfaces, collections, and service classes. Don't write full code .
 
 ### AI Response Summary
 Suggested `Person`, `Player`, `Admin`, `Hero`, `Equipment`, `Team`, `MatchRecord`, plus services such as `GameDataManager`, `SearchService`, and `FileStorageService`.

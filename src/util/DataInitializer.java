@@ -1,6 +1,5 @@
 package util;
 
-import model.Admin;
 import model.Equipment;
 import model.EquipmentType;
 import model.Hero;
@@ -25,7 +24,6 @@ public class DataInitializer {
         createHeroes(manager);
         createPlayers(manager);
         createMatches(manager);
-        manager.registerUser(new Admin("admin", "System Admin", "admin123"));
     }
 
     private static void createTeams(GameDataManager manager) {
@@ -38,36 +36,40 @@ public class DataInitializer {
     }
 
     private static void createEquipment(GameDataManager manager) {
-        addEquipment(manager, "E001", "Shadow Blade", EquipmentType.WEAPON, 4.6, 80, 0);
-        addEquipment(manager, "E002", "Storm Bow", EquipmentType.WEAPON, 4.4, 70, 0);
-        addEquipment(manager, "E003", "Arcane Staff", EquipmentType.WEAPON, 4.5, 90, 0);
-        addEquipment(manager, "E004", "Guardian Shield", EquipmentType.ARMOR, 4.2, 0, 60);
-        addEquipment(manager, "E005", "Dragon Armor", EquipmentType.ARMOR, 4.7, 0, 90);
-        addEquipment(manager, "E006", "Swift Boots", EquipmentType.ACCESSORY, 4.1, 20, 20);
-        addEquipment(manager, "E007", "Power Ring", EquipmentType.ACCESSORY, 4.3, 40, 10);
-        addEquipment(manager, "E008", "Life Pendant", EquipmentType.ACCESSORY, 4.0, 0, 40);
-        addEquipment(manager, "E009", "Frost Hammer", EquipmentType.WEAPON, 4.8, 85, 10);
-        addEquipment(manager, "E010", "Sun Spear", EquipmentType.WEAPON, 4.5, 75, 15);
-        addEquipment(manager, "E011", "Moon Cloak", EquipmentType.ARMOR, 4.4, 0, 70);
-        addEquipment(manager, "E012", "Wind Amulet", EquipmentType.ACCESSORY, 4.2, 30, 30);
-        addEquipment(manager, "E013", "Blood Axe", EquipmentType.WEAPON, 4.6, 95, 0);
-        addEquipment(manager, "E014", "Crystal Wand", EquipmentType.WEAPON, 4.7, 100, 0);
-        addEquipment(manager, "E015", "Iron Helm", EquipmentType.ARMOR, 4.1, 0, 55);
-        addEquipment(manager, "E016", "Phoenix Plate", EquipmentType.ARMOR, 4.9, 10, 100);
-        addEquipment(manager, "E017", "Lucky Charm", EquipmentType.ACCESSORY, 3.9, 15, 15);
-        addEquipment(manager, "E018", "Thunder Gauntlet", EquipmentType.WEAPON, 4.5, 88, 5);
-        addEquipment(manager, "E019", "Spirit Mask", EquipmentType.ARMOR, 4.3, 0, 65);
-        addEquipment(manager, "E020", "Oracle Lens", EquipmentType.ACCESSORY, 4.6, 25, 25);
+        addEquipment(manager, "E001", "Endless Edge", EquipmentType.WEAPON, 4.8, 130, 0, 0, 0);
+        addEquipment(manager, "E002", "Storm Bow", EquipmentType.WEAPON, 4.4, 70, 0, 0, 0);
+        addEquipment(manager, "E003", "Arcane Staff", EquipmentType.WEAPON, 4.5, 90, 0, 0, 0);
+        addEquipment(manager, "E004", "Guardian Shield", EquipmentType.ARMOR, 4.2, 0, 110, 0, 0);
+        addEquipment(manager, "E005", "Dragon Armor", EquipmentType.ARMOR, 4.7, 0, 90, 500, 0);
+        addEquipment(manager, "E006", "Swift Boots", EquipmentType.SHOES, 4.1, 0, 0, 0, 60);
+        addEquipment(manager, "E007", "Power Ring", EquipmentType.ACCESSORY, 4.3, 40, 10, 0, 0);
+        addEquipment(manager, "E008", "Life Pendant", EquipmentType.ACCESSORY, 4.0, 0, 40, 200, 0);
+        addEquipment(manager, "E009", "Shadow Axe", EquipmentType.WEAPON, 4.6, 85, 0, 500, 0);
+        addEquipment(manager, "E010", "Sun Spear", EquipmentType.WEAPON, 4.5, 75, 15, 0, 0);
+        addEquipment(manager, "E011", "Moon Cloak", EquipmentType.ARMOR, 4.4, 0, 70, 300, 0);
+        addEquipment(manager, "E012", "Wind Amulet", EquipmentType.ACCESSORY, 4.2, 30, 30, 0, 20);
+        addEquipment(manager, "E013", "Crusher", EquipmentType.WEAPON, 4.7, 200, 0, 0, 0);
+        addEquipment(manager, "E014", "Crystal Wand", EquipmentType.WEAPON, 4.7, 100, 0, 0, 0);
+        addEquipment(manager, "E015", "Iron Helm", EquipmentType.ARMOR, 4.1, 0, 55, 150, 0);
+        addEquipment(manager, "E016", "Phoenix Plate", EquipmentType.ARMOR, 4.9, 10, 100, 400, 0);
+        addEquipment(manager, "E017", "Lucky Charm", EquipmentType.ACCESSORY, 3.9, 15, 15, 100, 0);
+        addEquipment(manager, "E018", "Blood Blade", EquipmentType.WEAPON, 4.5, 100, 0, 0, 0);
+        addEquipment(manager, "E019", "Spirit Mask", EquipmentType.ARMOR, 4.3, 0, 65, 250, 0);
+        addEquipment(manager, "E020", "Oracle Lens", EquipmentType.ACCESSORY, 4.6, 25, 25, 0, 0);
+        addEquipment(manager, "E021", "Rapid Boots", EquipmentType.SHOES, 4.2, 0, 0, 0, 80);
     }
 
     private static void addEquipment(GameDataManager manager, String id, String name, EquipmentType type,
-                                     double rating, int attackBonus, int defenseBonus) {
-        manager.addEquipment(new Equipment(id, name, type, rating, attackBonus, defenseBonus));
+                                     double rating, int attackBonus, int defenseBonus,
+                                     int hpBonus, int speedBonus) {
+        manager.addEquipment(new Equipment(id, name, type, rating, attackBonus, defenseBonus, hpBonus, speedBonus));
     }
 
     private static void createHeroes(GameDataManager manager) {
-        addHero(manager, "H001", "Li Bai", HeroType.ASSASSIN, 320, 180, 2800, List.of("E001", "E006", "E007"));
-        addHero(manager, "H002", "Han Xin", HeroType.ASSASSIN, 310, 170, 2700, List.of("E001", "E006", "E013"));
+        addHero(manager, "H001", "Li Bai", HeroType.ASSASSIN, 320, 180, 2800,
+                List.of("E001", "E013", "E009", "E018", "E006"));
+        addHero(manager, "H002", "Han Xin", HeroType.ASSASSIN, 310, 170, 2700,
+                List.of("E001", "E009", "E018", "E021"));
         addHero(manager, "H003", "Daji", HeroType.MAGE, 340, 160, 2500, List.of("E003", "E014", "E012"));
         addHero(manager, "H004", "Luban No.7", HeroType.MARKSMAN, 330, 150, 2400, List.of("E002", "E007", "E020"));
         addHero(manager, "H005", "Arthur", HeroType.WARRIOR, 280, 220, 3200, List.of("E004", "E005", "E010"));
@@ -114,6 +116,18 @@ public class DataInitializer {
         for (Player player : manager.getPlayers()) {
             manager.getTeam(player.getTeamId()).addPlayer(player.getId());
         }
+
+        equipMultiple(manager, "P001", "H001", "E001", "E013", "E009");
+        equipMultiple(manager, "P001", "H005", "E004", "E005");
+        equipMultiple(manager, "P001", "H007", "E010", "E005");
+    }
+
+    private static void equipMultiple(GameDataManager manager, String playerId, String heroId, String... equipmentIds) {
+        manager.findPlayer(playerId).ifPresent(player -> {
+            for (String equipmentId : equipmentIds) {
+                player.equipItem(heroId, equipmentId);
+            }
+        });
     }
 
     private static void createPlayer(GameDataManager manager, String id, String name, String teamId, int level,

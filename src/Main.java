@@ -1,4 +1,4 @@
-﻿import model.Admin;
+import model.Admin;
 import model.Equipment;
 import model.EquipmentType;
 import model.Hero;
@@ -7,6 +7,7 @@ import model.MatchRecord;
 import model.MatchResult;
 import model.Person;
 import model.Player;
+import model.Role;
 import model.Team;
 import service.AuthenticationService;
 import service.FileStorageService;
@@ -16,12 +17,14 @@ import service.SearchService;
 import util.DataInitializer;
 import util.InputHelper;
 
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Main {
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(new InputStreamReader(System.in, StandardCharsets.UTF_8));
     private final InputHelper input = new InputHelper(scanner);
     private final GameDataManager manager = new GameDataManager();
     private final AuthenticationService authService = new AuthenticationService();
@@ -52,17 +55,30 @@ public class Main {
     private void initializeData() {
         try {
             storageService.load(manager);
-            if (manager.getPlayers().isEmpty()) {
+            if (manager.getPlayers().isEmpty() || manager.findEquipment("E021").isEmpty()) {
+                if (!manager.getPlayers().isEmpty()) {
+                    System.out.println("Detected outdated save file. Reloading sample dataset...");
+                }
+                manager.clearAllData();
                 DataInitializer.loadSampleData(manager);
                 storageService.save(manager);
-            } else {
-                manager.registerUser(new Admin("admin", "System Admin", "admin123"));
             }
         } catch (Exception ex) {
             System.out.println("Failed to load saved data, using sample dataset. Reason: " + ex.getMessage());
             manager.clearAllData();
             DataInitializer.loadSampleData(manager);
         }
+        registerDefaultAdmins();
+        long adminCount = manager.getUsers().stream().filter(user -> user.getRole() == Role.ADMIN).count();
+        System.out.println("Loaded " + adminCount + " admin account(s).");
+        if (adminCount < 2) {
+            System.out.println("Warning: expected 2 admin accounts. Please run compile-and-run.bat to recompile.");
+        }
+    }
+
+    private void registerDefaultAdmins() {
+        manager.registerUser(new Admin("\u996d\u56e2linj44", "\u996d\u56e2linj44", "070530"));
+        manager.registerUser(new Admin("\u7ea2\u7cd6guoy10", "\u90ed\u6021\u59dc", "123456"));
     }
 
     private void saveDataQuietly() {
@@ -80,7 +96,7 @@ public class Main {
         if (choice == 2) {
             return false;
         }
-        String username = input.readLine("Username (admin or player ID): ");
+        String username = input.readLine("Username (admin account or player ID): ");
         String password = input.readLine("Password: ");
         var userOptional = authService.login(manager, username, password);
         if (userOptional.isEmpty()) {
@@ -92,7 +108,6 @@ public class Main {
         return true;
     }
 
-    // Fixed switch branch return syntax for exit options.
     private boolean adminMenu() {
         printAdminMenu();
         int choice = input.readInt("Choose an option: ", 0, 14);
@@ -130,9 +145,9 @@ public class Main {
         Player current = authService.getCurrentPlayer();
         try {
             switch (choice) {
-                case 1 -> System.out.println(current.generateReport());
+                case 1 -> System.out.println(searchService.buildPlayerProfileReport(current));
                 case 2 -> editOwnProfile(current);
-                case 3 -> System.out.println(searchService.buildPlayerLookupReport(current.getId()));
+                case 3 -> System.out.println(searchService.buildPlayerProfileReport(current));
                 case 4 -> System.out.println(searchService.buildMatchHistoryReportForPlayer(current.getId(),
                         input.readInt("How many recent matches? ", 1, 20)));
                 case 5 -> System.out.println(searchService.buildPlayerLookupReport(input.readLine("Player ID or name: ")));
@@ -172,11 +187,11 @@ public class Main {
 
     private void printPlayerMenu() {
         System.out.println("\n--- Player Menu ---");
-        System.out.println("1. View My Profile");
+        System.out.println("1. View My Profile (Heroes & Equipment)");
         System.out.println("2. Edit My Profile");
-        System.out.println("3. View My Heroes");
+        System.out.println("3. View My Heroes & Equipment");
         System.out.println("4. View My Match History");
-        System.out.println("5. Player Lookup");
+        System.out.println("5. Player Lookup (Heroes & Equipment)");
         System.out.println("6. Team Overview");
         System.out.println("7. Hero Details");
         System.out.println("8. Equipment Statistics");
@@ -268,10 +283,12 @@ public class Main {
             Equipment item = new Equipment(
                     input.readLine("Equipment ID: "),
                     input.readLine("Name: "),
-                    EquipmentType.valueOf(input.readLine("Type (WEAPON/ARMOR/ACCESSORY): ").toUpperCase()),
+                    EquipmentType.valueOf(input.readLine("Type (WEAPON/ARMOR/SHOES/ACCESSORY): ").toUpperCase()),
                     input.readDouble("Rating (0-5): "),
                     input.readInt("Attack bonus: ", 0, 500),
-                    input.readInt("Defense bonus: ", 0, 500));
+                    input.readInt("Defense bonus: ", 0, 500),
+                    input.readInt("HP bonus: ", 0, 2000),
+                    input.readInt("Speed bonus: ", 0, 200));
             manager.addEquipment(item);
             System.out.println("Equipment added.");
         } else {

@@ -1,144 +1,134 @@
-# Project Plan — Honor of Kings IMS [25722091]
+Project Plan — Honor of Kings IMS \[25722091]
 
-## 1. Project Goal
+1. Project Goal
+I need to build a console-based information management system for Honor of Kings. Admins should be able to manage all the game data, and regular players can only view public info plus their own profile and match history. The system has to show that I understand OOP, collections, authentication, search and ranking features, file saving, and also document how I used AI responsibly.
+2. Requirement Analysis
+Here's how I plan to implement each required feature:
 
-Build a Java console Information Management System for Honor of Kings that lets **Admin** users manage all game data and **Player** users view public information plus their own profile and match history. The system must demonstrate OOP design, collections, authentication, search/report features, ranking, file persistence, and responsible AI-assisted development evidence.
+Requirement	How I'll do it
+Player lookup	Use SearchService.buildPlayerLookupReport() to search by ID or name, then show team, level, win rate, heroes, and equipment
+Team overview	SearchService.buildTeamOverviewReport() shows members, average level, total matches, win rate, and top player
+Hero details	SearchService.buildHeroDetailsReport() shows type, stats, compatible equipment, owners, and some recommendations
+Equipment statistics	RankingService.buildEquipmentStatisticsReport() ranks items using a formula I'll document
+Match history	SearchService will have methods to show last N matches for a player or team, including hero pick rates
+Leaderboard	RankingService.buildLeaderboardReport() will support sorting by win rate, level, matches, and a custom score
+Data management	Admin menu options in Main.java that call GameDataManager methods for CRUD
+Authentication	AuthenticationService will handle login and tell apart Admin vs Player roles
+File persistence	FileStorageService will save and load from data/game\_data.txt
+Initial dataset	DataInitializer.loadSampleData() will create 3 teams, 15 players, 15 heroes, 20 equipment items, and 12 matches
+3. Java Concepts I Plan to Use
+Inheritance: Player and Admin will both extend an abstract Person class
 
-## 2. Requirement Analysis
+Interfaces: I'll make Searchable, Reportable, Persistable, and Authenticatable
 
-| Requirement | Implementation |
-|-------------|----------------|
-| Player lookup | `SearchService.buildPlayerLookupReport()` searches by ID/name and shows team, level, win rate, heroes, equipment |
-| Team overview | `SearchService.buildTeamOverviewReport()` shows members, average level, total matches, win rate, top player |
-| Hero details | `SearchService.buildHeroDetailsReport()` shows type, stats, compatible equipment, owners, recommendations |
-| Equipment statistics | `RankingService.buildEquipmentStatisticsReport()` ranks items using a documented score formula |
-| Match history | `SearchService.buildMatchHistoryReportForPlayer/Team()` shows last N matches, record, hero pick rate |
-| Leaderboard | `RankingService.buildLeaderboardReport()` supports win rate, level, matches, and custom score |
-| Data management | Admin menu CRUD in `Main.java` backed by `GameDataManager` |
-| Authentication | `AuthenticationService` with Admin and Player roles |
-| File persistence | `FileStorageService` saves/loads `data/game_data.txt` |
-| Initial dataset | `DataInitializer.loadSampleData()` creates 3 teams, 15 players, 15 heroes, 20 equipment, 12 matches |
+Polymorphism: The logged-in user will be stored as a Person, but I'll check the actual type to show different menus
 
-## 3. Java Concepts Used
+Association: A Player will own heroes and equipment mappings
 
-- **Inheritance:** `Player`, `Admin` extend abstract `Person`
-- **Interfaces:** `Searchable`, `Reportable`, `Persistable`, `Authenticatable`
-- **Polymorphism:** login stores current user as `Person`; runtime type checks for role menus
-- **Association:** `Player` owns heroes and hero equipment mappings
-- **Aggregation:** `Team` contains player IDs
-- **Collections:** `HashMap`, `ArrayList`, streams, sorting comparators
-- **Enums:** `HeroType`, `EquipmentType`, `MatchResult`, `Role`
-- **Exception handling:** duplicate IDs, missing records, invalid menu input, file load/save failures
-- **File I/O:** pipe-delimited text persistence
+Aggregation: A Team will contain a list of player IDs
 
-## 4. Class Design
+Collections: Mostly HashMap and ArrayList, plus streams for filtering and sorting
 
-| Class | Responsibility |
-|-------|------------------|
-| `Person` | Shared user fields and authentication contract |
-| `Player` | Player stats, owned heroes, equipped items, report generation |
-| `Admin` | Admin role marker with full permissions |
-| `Hero` | Hero stats, type, compatible equipment |
-| `Equipment` | Item stats and rating |
-| `Team` | Team identity and member list |
-| `MatchRecord` | Match metadata and hero picks |
-| `GameDataManager` | Central in-memory data store and CRUD |
-| `AuthenticationService` | Login/logout and role checks |
-| `SearchService` | Lookup and reporting features |
-| `RankingService` | Equipment ranking and leaderboard |
-| `FileStorageService` | Save/load data file |
-| `DataInitializer` | Sample dataset bootstrap |
-| `InputHelper` | Safe console input parsing |
-| `Main` | Menu-driven application entry point |
+Enums: HeroType, EquipmentType, MatchResult, Role
 
-## 5. UML Draft
+Exception handling: Need to handle duplicate IDs, missing records, invalid input, and file errors
 
-Text-based UML:
+File I/O: Simple pipe-delimited text format for saving
 
-```
-<<abstract>> Person
-  - id, name, password, role
-  + authenticate()
-  + describeRole()
+4. Class Design
+Class	What it does
+Person	Abstract class for common user fields and authentication
+Player	Player stats, owned heroes, equipped items, can generate a report
+Admin	Just a marker class, extends Person, has full permissions
+Hero	Hero stats, type, and compatible equipment list
+Equipment	Item stats and rating
+Team	Team ID, name, and list of member IDs
+MatchRecord	Match info like date, opponent, result, and which hero each player picked
+GameDataManager	Stores all data in memory and handles CRUD operations
+AuthenticationService	Login, logout, role checking
+SearchService	All the lookup and reporting methods
+RankingService	Equipment ranking and leaderboard
+FileStorageService	Save and load from text file
+DataInitializer	Loads sample data if no saved file exists
+InputHelper	Helper for reading user input safely
+Main	The main menu and app loop
+5. UML Draft
+Here's a text version of my UML (I also have a diagram in docs/uml.txt):
 
-Player --|> Person
-Admin --|> Person
+text
+Person (abstract)
 
-Team o-- Player : member IDs
-Player *-- Hero : ownedHeroIds
-Hero o-- Equipment : compatibleEquipmentIds
-MatchRecord --> Team
-MatchRecord --> Player : hero picks
+* id, name, password, role
+* authenticate()
+* describeRole()
 
-GameDataManager --> Person, Player, Hero, Equipment, Team, MatchRecord
-AuthenticationService --> GameDataManager
-SearchService --> GameDataManager
-RankingService --> GameDataManager
-FileStorageService --> GameDataManager
-Main --> all services
-```
+Player extends Person
+Admin extends Person
 
-See also `docs/uml.txt`.
+Team contains Player (by ID)
+Player owns Hero (by ID)
+Hero has compatible Equipment (by ID)
+MatchRecord belongs to Team and has hero picks per Player
 
-## 6. Data Design
+GameDataManager holds all the data
+AuthenticationService, SearchService, RankingService, FileStorageService all use GameDataManager
+Main uses all the services
+6. Data Design
+For the initial sample data, I'll create:
 
-Initial sample data:
+3 teams: Dragon Warriors, Storm Legends, Jade Guardians
 
-- Teams: Dragon Warriors, Storm Legends, Jade Guardians
-- 15 players, each with 3 heroes and at least one equipped item
-- 15 heroes across assassin, mage, marksman, warrior, tank, support types
-- 20 equipment items across weapon, armor, accessory types
-- 12 match records with hero picks and win/loss results
+15 players, each with 3 heroes and at least one equipped item
 
-Persistent storage format: one record per line in `data/game_data.txt` using prefixes `TEAM|`, `EQUIP|`, `HERO|`, `PLAYER|`, `MATCH|`.
+15 heroes covering assassin, mage, marksman, warrior, tank, and support types
 
-## 7. AI Usage Plan
+20 equipment items (weapon, armor, accessory)
 
-| Agent Role | Allowed Help |
-|------------|--------------|
-| Architect Agent | Class structure, relationships, package layout, UML suggestions |
-| Implementation Agent | Selected service methods, menu wiring, persistence format |
-| Testing/Reviewer Agent | Test case drafting, null/duplicate ID review, deletion consistency checks |
+12 match records with hero picks and win/loss results
 
-Human responsibilities: requirement interpretation, final design approval, manual verification, Git commits, reflection writing.
+For saving, each line in data/game\_data.txt will start with a prefix like TEAM|, EQUIP|, HERO|, PLAYER|, or MATCH| so I know what type of record it is.
 
-## 8. Prompt Strategy
+7. How I'll Use AI
+I'll use different "agent roles" for different tasks:
 
-Prompts will be specific and scoped, for example:
+Agent Role	What I'll ask them to help with
+Architect Agent	Class structure, relationships, package layout, UML ideas
+Implementation Agent	Specific service methods, menu wiring, persistence format
+Testing/Reviewer Agent	Help draft test cases, review for null/duplicate issues, check deletion consistency
+I'll be responsible for reading the requirements, making final design decisions, testing everything manually, doing Git commits, and writing the reflection myself.
 
-- design-only prompts without full code generation
-- implementation prompts limited to one class or method
-- review prompts asking for bugs, encapsulation issues, and edge cases
+8. My Prompt Strategy
+I won't just ask AI to "write my project". I'll try to write specific prompts like:
 
-Every AI output will be compiled, run, and checked against coursework requirements before acceptance.
+Ask for design only, no full code yet
 
-## 9. Development Timeline
+Ask for implementation of just one method or class at a time
 
-| Stage | Work |
-|-------|------|
-| Stage 1 | Read PDF requirements, create repository, write plan.md |
-| Stage 2 | Architect Agent feedback on OOP structure |
-| Stage 3 | Implement model classes and sample data |
-| Stage 4 | Implement search/report menus |
-| Stage 5 | Implement authentication and admin/player permissions |
-| Stage 6 | Implement persistence and ranking |
-| Stage 7 | Testing/Reviewer Agent feedback and bug fixes |
-| Stage 8 | Final docs, reflection, git-history export |
+Ask AI to review my code for bugs or design issues
 
-## 10. Testing Plan
+After AI gives me code, I'll compile it, run it, and check if it actually does what I need before accepting it.
 
-Test player lookup, team overview, hero details, equipment ranking, match history, leaderboard, admin login, player login, invalid login, duplicate ID add, missing record search, and file reload after save. Details recorded in `docs/test-cases.md`.
+9. Development Timeline
+Stage	What I'll do
+Stage 1	Read the PDF requirements, create Git repo, write plan.md
+Stage 2	Ask Architect Agent for feedback on my class design
+Stage 3	Implement the model classes and sample data
+Stage 4	Implement search and report menus
+Stage 5	Add authentication and separate admin/player menus
+Stage 6	Add file persistence and ranking features
+Stage 7	Use Testing Agent to find bugs and fix them
+Stage 8	Finish documentation, write reflection, export git history
+10. Testing Plan
+I'll test all the main features: player lookup, team overview, hero details, equipment ranking, match history, leaderboard, admin login, player login, invalid login, adding duplicate IDs, searching for missing records, and making sure file save/load works. I'll record everything in docs/test-cases.md.
+11. Risks and How I'll Avoid Them
+Risk	What I'll do about it
+Putting too much code in Main:	Split logic into service classes from the beginning
+Deleting something but leaving broken references:	Make sure remove methods clean up everywhere (hero from players, player from team, etc.)
+User enters invalid input:	Use InputHelper to loop until they give a valid number or yes/no
+File format gets messed up:	  Use typed prefixes and load in a specific order
+Fake AI evidence:	Actually record my real prompts, Git commits, and what I decided to accept or change
+12. Reflection Placeholder
+I'll write my final reflection in reflection.md after I finish coding and testing. I'll answer all 10 questions honestly about what worked, what didn't, and what I learned from using AI.
 
-## 11. Risk Analysis
+&#x20;      
 
-| Risk | Mitigation |
-|------|------------|
-| Over-reliance on one giant Main class | Split logic into services and model classes |
-| Inconsistent deletes | `GameDataManager.removeHero/removePlayer/removeEquipment` clean related references |
-| Invalid console input | `InputHelper` loops until valid values |
-| File format errors | Typed prefixes and ordered load sequence |
-| Fake AI evidence | Record real prompts, commits, and human decisions |
-
-## 12. Final Reflection Placeholder
-
-Final reflection answers will be completed in `ai/reflection.md` after implementation and manual testing.
