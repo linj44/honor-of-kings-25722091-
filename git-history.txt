@@ -2,7 +2,8 @@
 # 远程: https://github.com/linj44/honor-of-kings-25722091-
 # 分支: master（按时间正序，最早 -> 最新）
 
-* ee7160c (HEAD -> master) [Human] final submission: complete Honor of Kings IMS project with source code, documentation and git history export
+* 5f73c5a (HEAD -> master, origin/master) [Human] update git history export for final submission
+* ee7160c [Human] final submission: complete Honor of Kings IMS project with source code, documentation and git history export
 * 82df231 [AI-Implementation] implement file persistence
 * 138623b [AI-Implementation] implement search and ranking services
 * efa09fc [Human] add development log and git history export
