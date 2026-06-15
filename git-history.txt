@@ -1,4 +1,9 @@
-﻿* 82df231 (HEAD -> master) [AI-Implementation] implement file persistence
+﻿# Git 提交历史导出 — honor of kings [25722091]
+# 远程: https://github.com/linj44/honor-of-kings-25722091-
+# 分支: master（按时间正序，最早 -> 最新）
+
+* ee7160c (HEAD -> master) [Human] final submission: complete Honor of Kings IMS project with source code, documentation and git history export
+* 82df231 [AI-Implementation] implement file persistence
 * 138623b [AI-Implementation] implement search and ranking services
 * efa09fc [Human] add development log and git history export
 * 5e1fb17 [Docs] write plan design README and AI evidence
@@ -10,6 +15,6 @@
 * dded38e [AI-Architect] add interfaces enums and service package layout
 * 23bb83d [AI-Architect] draft OOP class structure for Person Hero Team
 * 0981432 [Human] create initial project structure and README
-* 8e6b347 [Human]Add .gitignore for Java builds, IDEs, and local secrets.
+* 8e6b347 Add .gitignore for Java builds, IDEs, and local secrets.
 * 1861c37 [Human] second commit: development log test
 * aaa4c05 [Human] initial commit: add project structure, source code and documentation
